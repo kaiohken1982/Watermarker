@@ -1,7 +1,7 @@
-Watermarker
-============
+Image Watermarker Module
+========================
 
-A watermark service module for Zend Framework 2
+An image watermark service module for Zend Framework 2
 
 
 ### Install with Composer
@@ -29,4 +29,11 @@ In a controller
 		$watermarker->openImage('/path/to/image.jpg');
 		$watermarker->openWatermark('/path/to/watermark.gif');
 		$watermarker->watermark();
+ ```
+
+### TODO
+
+ ```
+Tests
+
  ```

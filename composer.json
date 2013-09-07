@@ -1,9 +1,9 @@
 {
     "name": "razor/watermarker",
-    "description": "A watermark service module for Zend Framework 2",
+    "description": "An image watermark service module for Zend Framework 2",
     "type": "library",
     "keywords": [
-        "zf2", "watermark"
+        "zf2", "thumbnail", "watermark", "image", "crop"
     ],
     "homepage": "https://github.com/kaiohken1982/Watermarker",
     "authors": [
