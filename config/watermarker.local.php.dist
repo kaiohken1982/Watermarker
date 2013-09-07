@@ -1,0 +1,8 @@
+<?php
+
+return array(
+    'watermarker' => array(
+        'watermarkFile' => '/path/to/watermark.gif',
+        'tmpDir' => '/path/to/tmp'
+    ),
+);

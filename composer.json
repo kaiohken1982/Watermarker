@@ -1,0 +1,31 @@
+{
+    "name": "razor/watermarker",
+    "description": "A watermark service module for Zend Framework 2",
+    "type": "library",
+    "keywords": [
+        "zf2", "watermark"
+    ],
+    "homepage": "https://github.com/kaiohken1982/Watermarker",
+    "authors": [
+        {
+            "name": "sergio Rinaudo",
+            "email": "sergio.rinaudo@gmail.com",
+            "homepage": "http://www.sergiorinaudo.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "ext-gd": "*",
+        "razor/thumbnailer" : "dev-master"
+    },
+    "suggest": {
+    },
+    "autoload": {
+        "psr-0": {
+            "Watermarker": "src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}
