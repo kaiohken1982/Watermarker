@@ -56,6 +56,7 @@ class ImageWatermark
      */
     public function filter($value)
     {
+    	var_dump($value); exit;    
     	$isFile = false;
     	if(is_array($value) && isset($value['tmp_name'])) {
     		$filtered = $value['tmp_name'];
