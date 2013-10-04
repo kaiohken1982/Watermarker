@@ -19,6 +19,7 @@ class ImageWatermark
 	{
 		$this->options['watermarkPath'] = getcwd() . DIRECTORY_SEPARATOR . '/www/watermark.gif';
 		$this->setOptions($options);
+		var_dump($this->getOptions()); exit;
 	}
 	
 	/**
