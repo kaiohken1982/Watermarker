@@ -69,7 +69,7 @@ class ImageWatermark
     	
 		$watermarker = new Watermarker($this->getThumbnailer());
         $watermarker->openImage($filtered);
-        $watermarker->openWatermark(getWatermarkPath());
+        $watermarker->openWatermark($this->getWatermarkPath());
         $watermarker->watermark();
         
         return $value;
