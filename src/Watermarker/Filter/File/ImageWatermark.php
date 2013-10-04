@@ -17,9 +17,8 @@ class ImageWatermark
 	
 	public function __construct($options)
 	{
-		$this->options['watermarkPath'] = getcwd() . DIRECTORY_SEPARATOR . '/www/watermark.gif';
+		$this->options['watermarkPath'] = getcwd() . DIRECTORY_SEPARATOR . 'www/watermark.gif';
 		$this->setOptions($options);
-		var_dump($this->getOptions()); exit;
 	}
 	
 	/**
@@ -70,7 +69,7 @@ class ImageWatermark
     	
 		$watermarker = new Watermarker($this->getThumbnailer());
         $watermarker->openImage($filtered);
-        $watermarker->openWatermark();
+        $watermarker->openWatermark(getWatermarkPath());
         $watermarker->watermark();
         
         return $value;
