@@ -135,7 +135,7 @@ class Watermarker
 		$this->watermarkInfo = $this->thumbnailerService->getImageInfo();
 		
         if('image/gif' !== $this->watermarkInfo['mime']) {
-            throw new \RuntimeException("Watermark is required to be of the mimetype image/gif, passed watermark is of mimetype '" . $watermarkInfo['mime'] . "'");
+            throw new \RuntimeException("Watermark is required to be of the mimetype image/gif, passed watermark is of mimetype '" . $this->watermarkInfo['mime'] . "'");
         }
 		
 		return $this;
@@ -278,7 +278,7 @@ class Watermarker
     }
     
     /**
-     * Set the watermark file and its info
+     * Set the watermark file
      *
      * @param string
      * @throws \RuntimeException
@@ -289,5 +289,15 @@ class Watermarker
         $this->watermarkFullPath = $watermarkFullPath;
         
         return $this;
+    }
+    
+    /**
+     * get the watermark file
+     * 
+     * @return string
+     */
+    public function getWatermarkFile() 
+    {
+        return $this->watermarkFullPath;
     }
 }
