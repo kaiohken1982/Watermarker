@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kaiohken1982/Thumbnailer.png)](https://travis-ci.org/kaiohken1982/Thumbnailer) - [![Dependency Status](https://www.versioneye.com/user/projects/52b17633ec1375723700004e/badge.png)](https://www.versioneye.com/user/projects/52b17633ec1375723700004e)
+
 Image Watermarker Module
 ========================
 
@@ -31,9 +33,21 @@ In a controller
 		$watermarker->watermark();
  ```
 
-### TODO
+### Run unit test
+ 
+Please note you must be in the module root.
 
- ```
-Tests
+```
+curl -s http://getcomposer.org/installer | php
+php composer.phar install
+cd tests
+../vendor/bin/phpunit 
+```
 
- ```
+If you have xdebug enabled and you want to see code coverage 
+run the command below, it'll create html files in 
+Watermarker\test\data\coverage
+
+```
+../vendor/bin/phpunit --coverage-html data/coverage
+```
