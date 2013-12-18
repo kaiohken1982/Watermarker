@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/kaiohken1982/Thumbnailer.png)](https://travis-ci.org/kaiohken1982/Thumbnailer) - [![Dependency Status](https://www.versioneye.com/user/projects/52b17633ec1375723700004e/badge.png)](https://www.versioneye.com/user/projects/52b17633ec1375723700004e)
+[![Build Status](https://travis-ci.org/kaiohken1982/Watermarker.png)](https://travis-ci.org/kaiohken1982/Thumbnailer) - [![Dependency Status](https://www.versioneye.com/user/projects/52b20b09ec1375e702000038/badge.png)](https://www.versioneye.com/user/projects/52b20b09ec1375e702000038)
 
 Image Watermarker Module
 ========================
