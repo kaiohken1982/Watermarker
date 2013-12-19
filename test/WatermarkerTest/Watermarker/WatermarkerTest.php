@@ -116,7 +116,7 @@ class WatermarkerTest
  	    $this->assertEquals($info['bits'], 8);
  	    $this->assertEquals($info['filename'], 'berserk');
  	    $this->assertEquals($info['basename'], 'berserk.jpg');
- 	    $this->assertEquals($info['dirname'], dirname(__DIR__) . DIRECTORY_SEPARATOR . '..\data');
+ 	    $this->assertEquals($info['dirname'], dirname(__DIR__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
 	}
 	
 	/**
@@ -137,7 +137,7 @@ class WatermarkerTest
  	    $this->assertEquals($info['bits'], 3);
  	    $this->assertEquals($info['filename'], 'watermark');
  	    $this->assertEquals($info['basename'], 'watermark.gif');
- 	    $this->assertEquals($info['dirname'], dirname(__DIR__) . DIRECTORY_SEPARATOR . '..\data');
+ 	    $this->assertEquals($info['dirname'], dirname(__DIR__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
 	}
 	
 	/**

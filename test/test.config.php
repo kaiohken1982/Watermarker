@@ -1,6 +1,7 @@
 <?php
 return array(
-    'Watermarker' => array(
-        
-    )
+    'watermarker' => array(
+        'watermarkFile' => './data/watermark.gif',
+        'tmpDir' => './data'
+    ),
 );
