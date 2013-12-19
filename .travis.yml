@@ -7,6 +7,9 @@ php:
 branches:
   only:
     - master
+    
+notifications:
+	email: false
 
 before_script:
   - curl -s http://getcomposer.org/installer | php
