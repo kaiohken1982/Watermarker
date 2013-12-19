@@ -223,7 +223,7 @@ class Watermarker
      * @param int
      * @return array
      */
-    protected function watermarkDimensionCoords() 
+    public function watermarkDimensionCoords() 
     {
         switch ($this->getType()) :
 		case self::WATERMARK_TYPE_FULLWIDTH:
@@ -253,11 +253,11 @@ class Watermarker
         	$watermarkTmpDir : $watermarkTmpDir . '/';
         
         if (!is_dir($watermarkTmpDir)) {
-            if (!mkdir($watermarkTmpDir)) {
+            if (!@mkdir($watermarkTmpDir)) {
                 throw new \RuntimeException("Impossible to create dir '" . $watermarkTmpDir . "'. Please check permissions");
             }
             
-            if (!is_writable( $watermarkTmpDir)) {
+            if (!@is_writable( $watermarkTmpDir)) {
                 throw new \RuntimeException("Dir '" . $watermarkTmpDir . "' is *not* writeable. Please check permissions");
             }
         }
@@ -299,5 +299,25 @@ class Watermarker
     public function getWatermarkFile() 
     {
         return $this->watermarkFullPath;
+    }
+    
+    /**
+     * Get the image info
+     * 
+     * @return array
+     */
+    public function getImageInfo() 
+    {
+        return $this->imageInfo;
+    }
+    
+    /**
+     * Get the watermark image info
+     * 
+     * @return array
+     */
+    public function getWatermarkInfo() 
+    {
+        return $this->watermarkInfo;
     }
 }
