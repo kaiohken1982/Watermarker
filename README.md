@@ -26,17 +26,40 @@ An image watermark service module for Zend Framework 2
     }
 }
  ```
+ 
+### Configuration
+
+Take the file config/watermarker.local.php.dist, rename it depending on your environment, 
+remove the dist suffix and add it inside you autoload directory.
+You can set the value for these two path 
+
+- watermarkFile: the physical path where your watermark is located
+- tmpDir: the physical path for elaborated watermark
+
+ ```
+return array(
+    'watermarker' => array(
+        'watermarkFile' => '/path/to/watermark.gif',
+        'tmpDir' => '/path/to/tmp'
+    ),
+);
+ ```
 
 ### How to use
 
 In a controller
 
  ```
-		$watermarker = $this->getServiceLocator()->get('Watermarker');
-		$watermarker->openImage('/path/to/image.jpg');
-		$watermarker->openWatermark('/path/to/watermark.gif');
-		$watermarker->watermark();
+	$watermarker = $this->getServiceLocator()->get('Watermarker');
+	$watermarker->openImage('/path/to/image.jpg');
+	$watermarker->openWatermark('/path/to/watermark.gif');
+	$watermarker->watermark();
  ```
+ 
+### TODO
+
+- Automatically clear tmp
+- Use best practice for modue configuration
 
 ### Run unit test
  
@@ -45,8 +68,7 @@ Please note you must be in the module root.
 ```
 curl -s http://getcomposer.org/installer | php
 php composer.phar install
-cd tests
-../vendor/bin/phpunit 
+./vendor/bin/phpunit 
 ```
 
 If you have xdebug enabled and you want to see code coverage 
@@ -54,5 +76,5 @@ run the command below, it'll create html files in
 Watermarker\test\data\coverage
 
 ```
-../vendor/bin/phpunit --coverage-html data/coverage
+./vendor/bin/phpunit --coverage-html data/coverage
 ```
