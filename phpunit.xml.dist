@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+	bootstrap="./tests/Bootstrap.php"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    verbose="true"
+    stopOnFailure="false"
+    processIsolation="false"
+    backupGlobals="false"
+    syntaxCheck="true"
+	>
+	<filter>
+		<blacklist>
+	        <directory>./vendor/*</directory>
+	        <directory>./test/*</directory>
+	        <directory>./src/*Exception.php</directory>
+	        <directory>./src/*Interface.php</directory>
+	    </blacklist>
+	    <whitelist>
+	        <directory>./src/*</directory>
+	    </whitelist>
+	</filter>
+    <testsuite name="Watermarker Module tests">
+        <directory>./tests</directory>
+    </testsuite>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
