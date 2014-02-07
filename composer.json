@@ -2,6 +2,7 @@
     "name": "razor/watermarker",
     "description": "An image watermark service module for Zend Framework 2",
     "type": "library",
+    "license": "MIT",
     "keywords": [
         "zf2", "thumbnail", "watermark", "image", "crop"
     ],
@@ -20,7 +21,8 @@
         "zendframework/zendframework": "2.*"
     },
     "require-dev": {
-		"phpunit/phpunit" : "3.7.*"
+		"phpunit/phpunit" : "3.7.*",
+        "satooshi/php-coveralls": "dev-master"
     },
     "suggest": {
     },
