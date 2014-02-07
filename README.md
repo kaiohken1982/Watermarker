@@ -1,10 +1,9 @@
-[![Build Status](https://travis-ci.org/kaiohken1982/Watermarker.png)](https://travis-ci.org/kaiohken1982/Thumbnailer) - [![Dependency Status](https://www.versioneye.com/user/projects/52b20b09ec1375e702000038/badge.png)](https://www.versioneye.com/user/projects/52b20b09ec1375e702000038)
-
 Image Watermarker Module
 ========================
 
-An image watermark service module for Zend Framework 2
+[![Build Status](https://travis-ci.org/kaiohken1982/Watermarker.png?branch=master)](https://travis-ci.org/kaiohken1982/Watermarker)
 
+An image watermark service module for Zend Framework 2
 
 ### Install with Composer
  ```
