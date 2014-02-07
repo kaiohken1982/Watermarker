@@ -2,6 +2,12 @@ Image Watermarker Module
 ========================
 
 [![Build Status](https://travis-ci.org/kaiohken1982/Watermarker.png?branch=master)](https://travis-ci.org/kaiohken1982/Watermarker)
+[![Coverage Status](https://coveralls.io/repos/kaiohken1982/Watermarker/badge.png)](https://coveralls.io/r/kaiohken1982/Watermarker)
+[![Dependency Status](https://www.versioneye.com/user/projects/52b20b09ec1375e702000038/badge.png)](https://www.versioneye.com/user/projects/52b20b09ec1375e702000038)
+[![Latest Stable Version](https://poser.pugx.org/razor/watermarker/v/stable.png)](https://packagist.org/packages/razor/watermarker) 
+[![Total Downloads](https://poser.pugx.org/razor/watermarker/downloads.png)](https://packagist.org/packages/razor/watermarker) 
+[![Latest Unstable Version](https://poser.pugx.org/razor/watermarker/v/unstable.png)](https://packagist.org/packages/razor/watermarker) 
+[![License](https://poser.pugx.org/razor/watermarker/license.png)](https://packagist.org/packages/razor/watermarker)
 
 An image watermark service module for Zend Framework 2
 
