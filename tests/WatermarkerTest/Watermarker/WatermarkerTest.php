@@ -63,7 +63,7 @@ class WatermarkerTest
         $this->obj->parseConfig($this->testConfig);
         
         $this->assertEquals('./data/watermark.gif', $this->obj->getWatermarkFile());
-	    $this->assertEquals(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR, $this->obj->getWatermarkTmpDir());
+	    $this->assertEquals(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'tmpWatermark' . DIRECTORY_SEPARATOR, $this->obj->getWatermarkTmpDir());
 	}
 	
 	/**
