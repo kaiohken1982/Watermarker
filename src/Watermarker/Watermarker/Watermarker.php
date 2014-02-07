@@ -67,7 +67,7 @@ class Watermarker
 	{
 		$this->thumbnailerService = $thumbnailerService;
 		$this->setType(self::WATERMARK_TYPE_FULLWIDTH);
-		$this->setWatermarkTmpDir(dirname(__DIR__) . '/../../data/');
+		$this->setWatermarkTmpDir(dirname(__DIR__) . '/../../data/tmpWatermark/');
 	}
 	
 	/**
