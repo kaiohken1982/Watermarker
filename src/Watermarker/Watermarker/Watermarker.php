@@ -78,6 +78,7 @@ class Watermarker
 	{
     	if(isset($config['watermarkFile'])) {
 			$this->setWatermarkFile($config['watermarkFile']);
+			$this->openWatermark();
     	}
     	
     	if(isset($config['tmpDir'])) {
