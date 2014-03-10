@@ -52,6 +52,8 @@ In a controller
  ```
 	$watermarker = $this->getServiceLocator()->get('Watermarker');
 	$watermarker->openImage('/path/to/image.jpg');
+	
+	// This line is not needed if watermark file is given within configuration file
 	$watermarker->openWatermark('/path/to/watermark.gif');
 	$watermarker->watermark();
  ```

@@ -67,7 +67,6 @@ class Watermarker
 	{
 		$this->thumbnailerService = $thumbnailerService;
 		$this->setType(self::WATERMARK_TYPE_FULLWIDTH);
-		$this->setWatermarkTmpDir(dirname(__DIR__) . '/../../data/tmpWatermark/');
 	}
 	
 	/**
@@ -77,8 +76,7 @@ class Watermarker
 	public function parseConfig($config) 
 	{
     	if(isset($config['watermarkFile'])) {
-			$this->setWatermarkFile($config['watermarkFile']);
-			$this->openWatermark();
+			$this->setWatermarkFullPath($config['watermarkFile']);
     	}
     	
     	if(isset($config['tmpDir'])) {
@@ -129,10 +127,10 @@ class Watermarker
 	 */
 	public function openWatermark($watermarkImageFullPath = null)
 	{
-		$watermarkFile = null === $watermarkImageFullPath ? 
-			$this->watermarkFullPath : $watermarkImageFullPath;
-		$this->setWatermarkFile($watermarkFile);
-		$this->thumbnailerService->open($watermarkFile);
+		if (null !== $watermarkImageFullPath) {
+		    $this->setWatermarkFullPath($watermarkImageFullPath);
+		}
+		$this->thumbnailerService->open($this->getWatermarkFullPath());
 		$this->watermarkInfo = $this->thumbnailerService->getImageInfo();
 		
         if('image/gif' !== $this->watermarkInfo['mime']) {
@@ -162,6 +160,8 @@ class Watermarker
         	"tempWatermark_" . md5(uniqid()) . "." . 
         	$this->watermarkInfo['extension'];
         
+        // This must stay here to ensure that the watermark is the current resource of thumbnailer service
+        $this->openWatermark();
         $this->thumbnailerService->resize($resizedWatermarkWidth, $resizedWatermarkHeight);
         $this->thumbnailerService->save($watermarkTmpFile);
         
@@ -285,7 +285,7 @@ class Watermarker
      * @throws \RuntimeException
      * @return \Watermarker\Watermarker\Watermarker
      */
-    public function setWatermarkFile($watermarkFullPath) 
+    public function setWatermarkFullPath($watermarkFullPath) 
     {
         $this->watermarkFullPath = $watermarkFullPath;
         
@@ -297,7 +297,7 @@ class Watermarker
      * 
      * @return string
      */
-    public function getWatermarkFile() 
+    public function getWatermarkFullPath() 
     {
         return $this->watermarkFullPath;
     }
