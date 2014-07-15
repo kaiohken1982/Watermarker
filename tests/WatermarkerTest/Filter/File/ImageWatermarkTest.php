@@ -68,4 +68,14 @@ class ImageWatermarkTest
 	    $response = $this->obj->filter($imageCopy);
 	    $this->assertEquals($imageCopy, $response);
 	}
+	
+	public function tearDown() 
+	{
+	    $testImage = realpath('.' . DIRECTORY_SEPARATOR . 'data'. DIRECTORY_SEPARATOR . 'berserkFilterTest.jpg');
+	    if(!empty($testImage) && file_exists($testImage)) {
+	        unlink($testImage);
+	    }
+	    
+	    $this->obj = null;
+	}
 }
