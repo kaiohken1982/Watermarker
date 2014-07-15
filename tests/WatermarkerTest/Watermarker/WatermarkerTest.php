@@ -9,47 +9,104 @@ use PHPUnit_Framework_TestCase;
 class WatermarkerTest 
 	extends PHPUnit_Framework_TestCase
 {
+    /**
+     * The objet to be tested
+     * @var Watermarker
+     */
 	protected $obj;
 	
+	/**
+	 * This is a dependency passed to constructor
+	 * @var Object
+	 */
 	protected $thumbnailerService;
 	
-	protected $testImagePath;
-	
-	protected $testConfig;
-	
-	protected $testImageName = 'berserk.jpg';
+	/**
+	 * The fullpath of the image to be watermarked for test
+	 * @var string
+	 */
+	protected $testImage;
 	
 	protected $testWatermarkName = 'watermark.gif';
 	
+	/**
+	 * This is called once for every test function.
+	 * This is reset by tearDown for each test.
+	 */
 	protected function setUp()
 	{
 	    //$serviceLocator = $this->getApplicationServiceLocator();
 	    $serviceLocator = Bootstrap::getServiceManager();
-		$this->testImagePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . '..' 
-		    . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
+	    
+	    // we use a copy of this image that will be removed in teardown
+	    // so we start always with a clean image
+	    $image = realpath('.' . DIRECTORY_SEPARATOR . 'data'. 
+		    DIRECTORY_SEPARATOR . 'berserkJPG.jpg');
+	    
+		$this->testImage = str_replace('berserkJPG', 'berserkTest', $image);
+		
+		copy($image, $this->testImage);
+		
 		$this->thumbnailerService = $serviceLocator->get('Thumbnailer');
 		$config = $serviceLocator->get('Configuration');
-        $this->testConfig = isset($config['watermarker']) ? $config['watermarker'] : array();
 	    $this->obj = new Watermarker($this->thumbnailerService);
-		$this->obj->openImage($this->testImagePath . $this->testImageName);
+		$this->obj->parseConfig(isset($config['watermarker']) ? $config['watermarker'] : array());
+		$this->obj->openImage($this->testImage);
+	}
+	
+	/**
+	 * Test if the temporary watermark directory is set by parseConfig 
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkTmpDir()
+	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkTmpDir()
+	 */
+	public function testSetGetWatermarkTmpDir() 
+	{
+	    $this->assertEquals(realpath('./data/tmpWatermark/') . DIRECTORY_SEPARATOR, $this->obj->getWatermarkTmpDir());
+	}
+	
+	/**
+	 * Test if the watermark full path is set by parseConfig 
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkFullPath()
+	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkFullPath()
+	 */
+	public function testSetGetWatermarkFullPath() 
+	{
+	    $this->assertEquals(realpath('./data/watermark.gif'), $this->obj->getWatermarkFullPath());
+	}
+
+	/**
+	 * Test if it throws an exception if the image is not valid to be a watermark
+	 *
+	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkTmpDir()
+	 * @expectedException \RuntimeException
+	 * @expectedExceptionMessage Watermark directory is empty. This can be due to the provided directory '/doesnotexists' not exists, please check.
+	 */
+	public function testSetGetWatermarkTmpDirEmptyException()  
+	{
+	    $this->obj->setWatermarkTmpDir('/doesnotexists'); 
+	}
+	
+	/**
+	 * The if this value was set in openImage
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::setImageFullPath()
+	 * @covers \Watermarker\Watermarker\Watermarker::getImageFullPath()
+	 */
+	public function testGetSetImageFullPath() 
+	{
+	    $this->assertEquals($this->testImage, $this->obj->getImageFullPath());
 	}
 	
 	/**
 	 * @covers \Watermarker\Watermarker\Watermarker::__construct()
 	 * @covers \Watermarker\Watermarker\Watermarker::getType()
-	 */
-	public function testGetType() 
-	{
-	    $this->assertEquals(Watermarker::WATERMARK_TYPE_FULLWIDTH, $this->obj->getType());
-	}
-	
-	/**
 	 * @covers \Watermarker\Watermarker\Watermarker::setType()
 	 */
-	public function testSetType() 
+	public function testGetSetType()
 	{
-	    $this->obj->setType(2);
-	    $this->assertEquals(2, $this->obj->getType());
+	    $this->assertEquals(Watermarker::WATERMARK_TYPE_FULLWIDTH, $this->obj->getType());
 	}
 	
 	/**
@@ -58,81 +115,72 @@ class WatermarkerTest
 	 */
 	public function testParseConfig() 
 	{
-        $this->obj->parseConfig($this->testConfig);
-	    $this->assertEquals(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'tmpWatermark' . DIRECTORY_SEPARATOR, $this->obj->getWatermarkTmpDir());
+	    $path = realpath('./data/tmpWatermark/') . DIRECTORY_SEPARATOR;
+	    $this->assertEquals($path, $this->obj->getWatermarkTmpDir());
 	}
 	
 	/**
-	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkTmpDir()
-	 * @expectedException \RuntimeException
-     * @expectedExceptionMessage Impossible to create dir '/this/does/not/exists/'. Please check permissions
-	 */
-	public function testSetWatermarkTmpDir() 
-	{
-	    $this->obj->setWatermarkTmpDir('/this/does/not/exists');
-	}
-	
-	/**
+	 * Test if it throws an exception if the image is not valid to be a watermark
+	 * 
 	 * @covers \Watermarker\Watermarker\Watermarker::openWatermark()
 	 * @expectedException \RuntimeException
      * @expectedExceptionMessage Watermark is required to be of the mimetype image/gif, passed watermark is of mimetype 'image/jpeg'
 	 */
-	public function testOpenWatermarkJpg() 
+	public function testOpenWatermarkJpgShoulGiveException() 
 	{
-	    $fullpath = $this->testImagePath . $this->testImageName;
-	    $this->obj->openWatermark($fullpath);
+	    $this->obj->openWatermark($this->testImage);
 	}
 	
 	/**
- 	 * @covers \Watermarker\Watermarker\Watermarker::getImageInfo()
+	 * This tests if the image to be marked is well loaded
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::setImageInfo()
+	 * @covers \Watermarker\Watermarker\Watermarker::getImageInfo()
 	 */
-	public function testGetImageInfo() 
+	public function testGetImageInfo()
 	{
- 	    $info = $this->obj->getImageInfo();
-
- 	    $this->assertEquals($info['extension'], 'jpg');
- 	    $this->assertEquals($info['height'], 406);
- 	    $this->assertEquals($info['width'], 960);
- 	    $this->assertEquals($info['mime'], 'image/jpeg');
- 	    $this->assertEquals($info['channels'], 3);
- 	    $this->assertEquals($info['bits'], 8);
- 	    $this->assertEquals($info['filename'], 'berserk');
- 	    $this->assertEquals($info['basename'], 'berserk.jpg');
- 	    $this->assertEquals($info['dirname'], dirname(__DIR__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
-	}
+	    $info = $this->obj->getImageInfo();
 	
+	    $this->assertEquals($info['extension'], 'jpg');
+	    $this->assertEquals($info['height'], 406);
+	    $this->assertEquals($info['width'], 960);
+	    $this->assertEquals($info['mime'], 'image/jpeg');
+	    $this->assertEquals($info['channels'], 3);
+	    $this->assertEquals($info['bits'], 8);
+	    $this->assertEquals($info['filename'], 'berserkTest');
+	    $this->assertEquals($info['basename'], 'berserkTest.jpg');
+	    $this->assertEquals($info['dirname'], realpath('./data'));
+	}
+
 	/**
- 	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkInfo()
+	 * This tests if the watermark is well loaded.
+	 * Watermark path is given in setUp by parseConfig
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkInfo()
+	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkInfo()
 	 * @covers \Watermarker\Watermarker\Watermarker::openWatermark()
 	 */
-	public function testWatermarkInfo() 
+	public function testWatermarkInfo()
 	{
-	    $fullpath = $this->testImagePath . $this->testWatermarkName;
-	    $this->obj->openWatermark($fullpath);
- 	    $info = $this->obj->getWatermarkInfo();
-
- 	    $this->assertEquals($info['extension'], 'gif');
- 	    $this->assertEquals($info['height'], 98);
- 	    $this->assertEquals($info['width'], 671);
- 	    $this->assertEquals($info['mime'], 'image/gif');
- 	    $this->assertEquals($info['channels'], 3);
- 	    $this->assertEquals($info['bits'], 3);
- 	    $this->assertEquals($info['filename'], 'watermark');
- 	    $this->assertEquals($info['basename'], 'watermark.gif');
- 	    $this->assertEquals($info['dirname'], dirname(__DIR__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
+	    $info = $this->obj->getWatermarkInfo();
+	
+	    $this->assertEquals($info['extension'], 'gif');
+	    $this->assertEquals($info['height'], 98);
+	    $this->assertEquals($info['width'], 671);
+	    $this->assertEquals($info['mime'], 'image/gif');
+	    $this->assertEquals($info['channels'], 3);
+	    $this->assertEquals($info['bits'], 3);
+	    $this->assertEquals($info['filename'], 'watermark');
+	    $this->assertEquals($info['basename'], 'watermark.gif');
+	    $this->assertEquals($info['dirname'], realpath('./data'));
 	}
 	
 	/**
-	 * @covers \Watermarker\Watermarker\Watermarker::setType()
 	 * @covers \Watermarker\Watermarker\Watermarker::openWatermark()
 	 * @covers \Watermarker\Watermarker\Watermarker::watermarkDimensionCoords()
 	 */
 	public function testWatermarkDimensionCoordsTypeFullwidth() 
 	{
-	    $fullpath = $this->testImagePath . $this->testWatermarkName;
-	    $this->obj->openWatermark($fullpath);
-	    $info = $this->obj->getImageInfo();
-	    $this->obj->setType(Watermarker::WATERMARK_TYPE_FULLWIDTH);
 	    $data = $this->obj->watermarkDimensionCoords();
 
 	    // $resizedWatermarkWidth, same ad image width
@@ -149,14 +197,112 @@ class WatermarkerTest
 	}
 	
 	/**
+	 * Check if it does the job..
+	 * This uses the PNG image set in this function, setUp is overridden
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::openImage()
 	 * @covers \Watermarker\Watermarker\Watermarker::watermark()
 	 */
-	public function testWatermark() 
+	public function testWatermarkPNG()
 	{
-	    $fullpath = $this->testImagePath . $this->testWatermarkName;
-	    $this->obj->openWatermark($fullpath);
-	    $watermark = $this->obj->watermark();
+	    $image = realpath('.' . DIRECTORY_SEPARATOR . 'data'. 
+		    DIRECTORY_SEPARATOR . 'berserkPNG.png');
 	    
-	    $this->assertTrue($watermark);
+		$testImage = str_replace('berserkPNG', 'berserkTestPNG', $image);
+		
+		copy($image, $testImage);
+		
+	    $this->obj->openImage(realpath('.' . DIRECTORY_SEPARATOR . 'data'. 
+		    DIRECTORY_SEPARATOR . 'berserkPNG.png'));
+	    
+	    $watermarkResponse = $this->obj->watermark();
+	     
+	    $this->assertTrue($watermarkResponse);
+	}
+	
+	/**
+	 * Check if it does the job..
+	 * This uses the GIF image set in this function, setUp is overridden
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::openImage()
+	 * @covers \Watermarker\Watermarker\Watermarker::watermark()
+	 */
+	public function testWatermarkGIF()
+	{
+	    $image = realpath('.' . DIRECTORY_SEPARATOR . 'data'. 
+		    DIRECTORY_SEPARATOR . 'berserkGIF.gif');
+	    
+		$testImage = str_replace('berserkGIF', 'berserkTestGIF', $image);
+		
+		copy($image, $testImage);
+		
+	    $this->obj->openImage(realpath('.' . DIRECTORY_SEPARATOR . 'data'. 
+		    DIRECTORY_SEPARATOR . 'berserkGIF.gif'));
+	    
+	    $watermarkResponse = $this->obj->watermark();
+	     
+	    $this->assertTrue($watermarkResponse);  
+	}
+	
+	/**
+	 * The image extension is not supported
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::openImage()
+	 * @covers \Watermarker\Watermarker\Watermarker::watermark()
+	 * @expectedException \RuntimeException
+     * @expectedExceptionMessage Not supported image type
+	 */
+	public function testWatermarkBMP()
+	{
+		$this->obj->setImageInfo(array(
+		    'extension' => 'bmp',
+		    'width' => 100,
+		    'height' => 100
+		));
+	    
+	    $watermarkResponse = $this->obj->watermark();
+	}
+	
+	/**
+	 * Final test, check if it does the job..
+	 * This uses the JPG image set in setUp.
+	 * This method *MUST* stay as final method if you are checking 
+	 * if the imaged is actually being marked (commenting tearDown).
+	 * If setUp run again the image copy will be overriden, 
+	 * resulting in a fresh image.
+	 * 
+	 * @covers \Watermarker\Watermarker\Watermarker::openImage()
+	 * @covers \Watermarker\Watermarker\Watermarker::watermark()
+	 */
+	public function testWatermarkJPG()
+	{
+	    $watermarkResponse = $this->obj->watermark();
+	     
+	    $this->assertTrue($watermarkResponse);
+	    
+	    $this->obj->setWatermarkInfo(null);
+	    $watermarkResponse = $this->obj->watermark();
+	     
+	    $this->assertTrue($watermarkResponse);
+	}
+	
+	/**
+	 * This is called once for every test function after the test function run
+	 */
+	protected function tearDown() 
+	{
+	    unlink($this->testImage);
+	    
+	    $testImage = realpath('.' . DIRECTORY_SEPARATOR . 'data'. DIRECTORY_SEPARATOR . 'berserkTestPNG.png');
+	    if(!empty($testImage) && file_exists($testImage)) {
+	        unlink($testImage);
+	    }
+	    
+	    $testImage = realpath('.' . DIRECTORY_SEPARATOR . 'data'. DIRECTORY_SEPARATOR . 'berserkTestGIF.gif');
+	    if(!empty($testImage) && file_exists($testImage)) {
+	        unlink($testImage);
+	    }
+	    
+	    $this->obj = null;
 	}
 }

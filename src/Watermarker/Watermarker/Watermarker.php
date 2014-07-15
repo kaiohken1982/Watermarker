@@ -76,7 +76,8 @@ class Watermarker
 	public function parseConfig($config) 
 	{
     	if(isset($config['watermarkFile'])) {
-			$this->setWatermarkFullPath($config['watermarkFile']);
+			// This also call setWatermarkFullPath
+			$this->openWatermark($config['watermarkFile']);
     	}
     	
     	if(isset($config['tmpDir'])) {
@@ -84,6 +85,72 @@ class Watermarker
     	}
         
         return $this;
+	}
+    
+    /**
+     * Get the image info
+     * 
+     * @return array
+     */
+    public function getImageInfo() 
+    {
+        return $this->imageInfo;
+    }
+    
+    /**
+     * Set the image info
+     * 
+     * @return Watermark
+     */
+    public function setImageInfo($imageInfo) 
+    {
+        $this->imageInfo = $imageInfo;
+	    
+	    return $this;
+    }
+	
+	/**
+	 * Get the watermark image info
+	 * 
+	 * @return string
+	 */
+	public function getWatermarkInfo() 
+	{
+	    return $this->watermarkInfo;
+	}
+	
+	/**
+	 * Set the watermark image info
+	 * 
+	 * @return Watermark
+	 */
+	public function setWatermarkInfo($watermarkInfo) 
+	{
+	    $this->watermarkInfo = $watermarkInfo;
+	    
+	    return $this;
+	}
+	
+	/**
+	 * Get the image to be marked's full path
+	 * 
+	 * @return string
+	 */
+	public function getImageFullPath() 
+	{
+	    return $this->imageFullPath;
+	}
+	
+	/**
+	 * Set the image to be marked's full path
+	 * 
+	 * @return Watermark
+	 */
+	public function setImageFullPath($imageToBeMarked) 
+	{
+	    $this->imageFullPath = $imageToBeMarked;
+	    
+	    return $this;
 	}
 	
 	/**
@@ -114,9 +181,9 @@ class Watermarker
 	 */
 	public function openImage($watermarkableImageFullPath) 
 	{
-		$this->imageFullPath = $watermarkableImageFullPath;
+		$this->setImageFullPath($watermarkableImageFullPath);
 		$this->thumbnailerService->open($watermarkableImageFullPath);
-		$this->imageInfo = $this->thumbnailerService->getImageInfo();
+		$this->setImageInfo($this->thumbnailerService->getImageInfo());
 		
 		return $this;
 	}
@@ -131,9 +198,11 @@ class Watermarker
 		    $this->setWatermarkFullPath($watermarkImageFullPath);
 		}
 		$this->thumbnailerService->open($this->getWatermarkFullPath());
-		$this->watermarkInfo = $this->thumbnailerService->getImageInfo();
+		$this->setWatermarkInfo($this->thumbnailerService->getImageInfo());
 		
-        if('image/gif' !== $this->watermarkInfo['mime']) {
+		$watermarkInfo = $this->getWatermarkInfo();
+		
+        if('image/gif' !== $watermarkInfo['mime']) {
             throw new \RuntimeException("Watermark is required to be of the mimetype image/gif, passed watermark is of mimetype '" . $this->watermarkInfo['mime'] . "'");
         }
 		
@@ -147,7 +216,8 @@ class Watermarker
 	public function watermark($opacity = 30) 
 	{
 		// This means that user didn't explicitly call it, use config instead
-		if(null === $this->watermarkInfo) {
+	    $watermarkInfo = $this->getWatermarkInfo();
+		if(null === $watermarkInfo) {
 			$this->openWatermark();
 		}
 		
@@ -158,7 +228,7 @@ class Watermarker
         // Creation of the temporary watermark for this image
         $watermarkTmpFile = $this->getWatermarkTmpDir() . 
         	"tempWatermark_" . md5(uniqid()) . "." . 
-        	$this->watermarkInfo['extension'];
+        	$watermarkInfo['extension'];
         
         // This must stay here to ensure that the watermark is the current resource of thumbnailer service
         $this->openWatermark();
@@ -169,17 +239,18 @@ class Watermarker
         $watermark = imagecreatefromgif($watermarkTmpFile);
         
         // Creazione del nuovo file immagine
-        switch ($this->imageInfo['extension']) {
+        $imageInfo = $this->getImageInfo();
+        switch ($imageInfo['extension']) {
 		case 'png':
-			$image = @imagecreatefrompng($this->imageFullPath);
+			$image = @imagecreatefrompng($this->getImageFullPath());
 			break;
         
 		case 'jpg':
-			$image = @imagecreatefromjpeg($this->imageFullPath);
+			$image = @imagecreatefromjpeg($this->getImageFullPath());
 			break;
         
 		case 'gif':
-			$image = @imagecreatefromgif($this->imageFullPath);
+			$image = @imagecreatefromgif($this->getImageFullPath());
 			break;
         
 		default:
@@ -194,18 +265,17 @@ class Watermarker
         	$resizedWatermarkHeight, $opacity
        	);
         
-        // We overwrite the passed image with this new watermarked image
-        switch ($this->imageInfo['extension']) {
+        switch ($imageInfo['extension']) {
 		case 'png':
-			$watermarkedImage = @imagepng($image, $this->imageFullPath, 0, null); // Corrupted image if NULL fourth parameter omitted!
+			$watermarkedImage = @imagepng($image, $this->getImageFullPath(), 0, null); // Corrupted image if NULL fourth parameter omitted!
 			break;
         
 		case 'jpg':
-			$watermarkedImage = @imagejpeg($image, $this->imageFullPath, 100);
+			$watermarkedImage = @imagejpeg($image, $this->getImageFullPath(), 100);
 			break;
         
 		case 'gif':
-			$watermarkedImage = @imagegif($image, $this->imageFullPath, 100);
+			$watermarkedImage = @imagegif($image, $this->getImageFullPath(), 100);
 			break;
         }
         
@@ -226,15 +296,18 @@ class Watermarker
      */
     public function watermarkDimensionCoords() 
     {
+        $watermarkInfo = $this->getWatermarkInfo();
+        $imageInfo = $this->getImageInfo();
+        
         switch ($this->getType()) :
 		case self::WATERMARK_TYPE_FULLWIDTH:
 		default:
-			$resizedWatermarkWidth = number_format($this->imageInfo['width'], 0, ',', '');
+			$resizedWatermarkWidth = number_format($imageInfo['width'], 0, ',', '');
 			$resizedWatermarkHeight = 
-				number_format($resizedWatermarkWidth * $this->watermarkInfo['height'] / 
-						$this->watermarkInfo['width'], 0, ',', '');
+				number_format($resizedWatermarkWidth * $watermarkInfo['height'] / 
+						$watermarkInfo['width'], 0, ',', '');
 			$destX = 0;  
-			$destY = number_format(($this->imageInfo['height']/2 - $resizedWatermarkHeight/2 ), 0, ',', '');
+			$destY = number_format(($imageInfo['height']/2 - $resizedWatermarkHeight/2 ), 0, ',', '');
             break;
         endswitch;
         
@@ -250,18 +323,17 @@ class Watermarker
      */
     public function setWatermarkTmpDir($watermarkTmpDir) 
     {
-        $watermarkTmpDir = substr( $watermarkTmpDir, -1 ) == '/' ? 
-        	$watermarkTmpDir : $watermarkTmpDir . '/';
+        $watermarkTmpDirCopy = $watermarkTmpDir;
+        $watermarkTmpDir = realpath($watermarkTmpDir);
         
-        if (!is_dir($watermarkTmpDir)) {
-            if (!@mkdir($watermarkTmpDir)) {
-                throw new \RuntimeException("Impossible to create dir '" . $watermarkTmpDir . "'. Please check permissions");
-            }
-            
-            if (!@is_writable( $watermarkTmpDir)) {
-                throw new \RuntimeException("Dir '" . $watermarkTmpDir . "' is *not* writeable. Please check permissions");
-            }
+        // If the provided tmpDir is empty throw exception
+        if (empty($watermarkTmpDir)) {
+            throw new \RuntimeException("Watermark directory is empty. This can be due to the provided directory '" . $watermarkTmpDirCopy . "' not exists, please check.");
         }
+        
+        // Adding the trailing slash
+        $watermarkTmpDir = substr($watermarkTmpDir, -1) == DIRECTORY_SEPARATOR ?
+            $watermarkTmpDir : $watermarkTmpDir . DIRECTORY_SEPARATOR;
          
         $this->watermarkTmpDir = $watermarkTmpDir;
         
@@ -275,7 +347,7 @@ class Watermarker
      */
     public function getWatermarkTmpDir() 
     {
-    	return realpath($this->watermarkTmpDir) . DIRECTORY_SEPARATOR;
+    	return $this->watermarkTmpDir;
     }
     
     /**
@@ -287,7 +359,7 @@ class Watermarker
      */
     public function setWatermarkFullPath($watermarkFullPath) 
     {
-        $this->watermarkFullPath = $watermarkFullPath;
+        $this->watermarkFullPath = realpath($watermarkFullPath);
         
         return $this;
     }
@@ -300,25 +372,5 @@ class Watermarker
     public function getWatermarkFullPath() 
     {
         return $this->watermarkFullPath;
-    }
-    
-    /**
-     * Get the image info
-     * 
-     * @return array
-     */
-    public function getImageInfo() 
-    {
-        return $this->imageInfo;
-    }
-    
-    /**
-     * Get the watermark image info
-     * 
-     * @return array
-     */
-    public function getWatermarkInfo() 
-    {
-        return $this->watermarkInfo;
     }
 }
