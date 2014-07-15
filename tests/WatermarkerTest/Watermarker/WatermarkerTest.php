@@ -59,6 +59,7 @@ class WatermarkerTest
 	 * 
 	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkTmpDir()
 	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkTmpDir()
+	 * @covers \Watermarker\Watermarker\Watermarker::parseConfig()
 	 */
 	public function testSetGetWatermarkTmpDir() 
 	{
@@ -70,6 +71,7 @@ class WatermarkerTest
 	 * 
 	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkFullPath()
 	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkFullPath()
+	 * @covers \Watermarker\Watermarker\Watermarker::parseConfig()
 	 */
 	public function testSetGetWatermarkFullPath() 
 	{
@@ -107,16 +109,6 @@ class WatermarkerTest
 	public function testGetSetType()
 	{
 	    $this->assertEquals(Watermarker::WATERMARK_TYPE_FULLWIDTH, $this->obj->getType());
-	}
-	
-	/**
-	 * @covers \Watermarker\Watermarker\Watermarker::parseConfig()
-	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkTmpDir() 
-	 */
-	public function testParseConfig() 
-	{
-	    $path = realpath('./data/tmpWatermark/') . DIRECTORY_SEPARATOR;
-	    $this->assertEquals($path, $this->obj->getWatermarkTmpDir());
 	}
 	
 	/**
