@@ -57,11 +57,6 @@ In a controller
 	$watermarker->openWatermark('/path/to/watermark.gif');
 	$watermarker->watermark();
  ```
- 
-### TODO
-
-- Automatically clear tmp
-- Use best practice for modue configuration
 
 ### Run unit test
  
