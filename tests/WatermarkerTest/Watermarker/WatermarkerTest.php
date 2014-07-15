@@ -54,15 +54,11 @@ class WatermarkerTest
 	
 	/**
 	 * @covers \Watermarker\Watermarker\Watermarker::parseConfig()
-	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkFile()
-	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkFile() 
 	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkTmpDir() 
 	 */
 	public function testParseConfig() 
 	{
         $this->obj->parseConfig($this->testConfig);
-        
-        $this->assertEquals('./data/watermark.gif', $this->obj->getWatermarkFile());
 	    $this->assertEquals(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'tmpWatermark' . DIRECTORY_SEPARATOR, $this->obj->getWatermarkTmpDir());
 	}
 	
@@ -74,20 +70,6 @@ class WatermarkerTest
 	public function testSetWatermarkTmpDir() 
 	{
 	    $this->obj->setWatermarkTmpDir('/this/does/not/exists');
-	}
-	
-	/**
-	 * @covers \Watermarker\Watermarker\Watermarker::openImage()
-	 * @covers \Watermarker\Watermarker\Watermarker::openWatermark()
-	 * @covers \Watermarker\Watermarker\Watermarker::setWatermarkFile()
-	 * @covers \Watermarker\Watermarker\Watermarker::getWatermarkFile() 
-	 */
-	public function testOpenWatermark() 
-	{
-	    $fullpath = $this->testImagePath . $this->testWatermarkName;
-	    $this->obj->openWatermark($fullpath);
-	    
-	    $this->assertEquals($fullpath, $this->obj->getWatermarkFile());
 	}
 	
 	/**
